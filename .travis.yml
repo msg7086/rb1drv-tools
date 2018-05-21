@@ -1,0 +1,4 @@
+language: ruby
+rvm:
+  - 2.5
+script: bundle exec ruby -I lib lib/rb1drv-tools.rb

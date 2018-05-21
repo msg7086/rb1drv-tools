@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+require 'rb1drv-tools'
+include Rb1drvTools
+
+logger = ENV['DEBUG'].to_s.empty? ? nil : Logger.new(STDERR)
+
+CLI.new('5aa1a4d9-a818-45b2-b28f-dbd6f11cd9fc', 'iwgvHYQV83)(cenTLA082}(', 'https://ruby-1drive.gitlab.io/od/', logger)
