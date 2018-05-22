@@ -37,7 +37,7 @@ module Rb1drvTools
     def self.config_home
       home = File.join(Dir.home, '.rb1drv')
     ensure
-      FileUtils.mkdir(home) unless File.exist?(home)
+      Dir.mkdir(home) unless File.exist?(home)
     end
 
     def self.default_profile_file
