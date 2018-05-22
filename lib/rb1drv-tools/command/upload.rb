@@ -72,7 +72,7 @@ module Rb1drvTools
           end
           Dir[item].each do |match|
             if File.directory?(match)
-              traverse_dir(match, target_obj.mkdir(match))
+              traverse_dir(match, target_obj.mkdir(File.basename(match)))
             else
               upload(match, target_obj, File.basename(match), overwrite_policy: overwrite_policy)
             end
