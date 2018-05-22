@@ -105,15 +105,23 @@ module Rb1drvTools
         return puts 'Remote file is up to date, skipped' if target_obj.mtime >= File.mtime(source_file) - 2
       end
       screen_width = TTY::Screen.width
+      file_size = File.size(source_file)
       if STDOUT.tty? && screen_width >= 50
         multibar = TTY::ProgressBar::Multi.new
-        bar = multibar.register("%s :current_byte / :total_byte :byte_rate/s [:bar] :eta :percent" % source_file[0..29], total: File.size(source_file), frequency: 2, head: '>')
+        bar = multibar.register("%s :current_byte / :total_byte :byte_rate/s [:bar] :eta :percent" % source_file[0..29], total: file_size, frequency: 2, head: '>')
         bar.start
       end
       subbar = nil
-      # trap(:WINCH) { bar.resize if bar }
 
-      target_directory.upload(source_file, target_name: target_name, overwrite: true) do |ev, st|
+      if file_size >= 524_288_000 # 500MiB
+        fragment_size = 209_715_200 # 200MiB
+      elsif file_size >= 209_715_200 # 200MiB
+        fragment_size = 83_886_080 # 80MiB
+      else
+        fragment_size = 20_971_520 # 20MiB
+      end
+
+      target_directory.upload(source_file, target_name: target_name, overwrite: true, fragment_size: fragment_size) do |ev, st|
         case ev
         when :new_segment
           subbar = multibar.register("%4d-%-4d :current_byte / :total_byte [:bar]" % [st[:from] / 1048576, st[:to] / 1048576], total: st[:to] - st[:from] + 1, frequency: 2, head: '>')
