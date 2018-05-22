@@ -82,7 +82,8 @@ module Rb1drvTools
     end
 
     def self.traverse_dir(source_directory, target_directory)
-      Dir.children(source_directory).sort.each do |child|
+      Dir.entries(source_directory).sort.each do |child|
+        next if child == '.' || child == '..'
         new_path = File.join(source_directory, child)
         if File.directory?(new_path)
           new_dir = target_directory.get_child(child)
