@@ -52,13 +52,16 @@ module Rb1drvTools
     end
 
     def humanize_size(size)
+      num = size.abs.to_f
       units = ['', 'K', 'M', 'G']
       unit_idx = 0
-      while size > 8192 && unit_idx < units.size - 1 do
-        size /= 1024
+      while num > 8192.0 && unit_idx < units.size - 1 do
+        num /= 1024.0
         unit_idx += 1
       end
-      "#{size}#{units[unit_idx]}"
+      num = num.round(1)
+      num = -num if size < 0
+      "#{num}#{units[unit_idx]}"
     end
   end
 end
