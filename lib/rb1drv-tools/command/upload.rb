@@ -6,6 +6,7 @@ module Rb1drvTools
       file_mode = true
       overwrite = false
       overwrite_smarter = false
+      time_sync = false
 
       items = []
       args.each do |arg|
@@ -16,6 +17,8 @@ module Rb1drvTools
             overwrite_smarter = true
           when 'f'
             overwrite = true
+          when 't'
+            time_sync = true
           else
             puts "Warning: unknown flag '#{flag}'."
           end
@@ -58,7 +61,7 @@ module Rb1drvTools
         target_dir = get_obj(File.dirname(target))
         CLI.cwd.mkdir(File.dirname(target))
         target_name = File.basename(target)
-        upload(items.first, target_dir, File.basename(target), overwrite_policy: overwrite_policy)
+        upload(items.first, target_dir, File.basename(target), overwrite_policy: overwrite_policy, time_sync: time_sync)
       else
         items.each do |item|
           unless target_obj.dir?
@@ -74,7 +77,7 @@ module Rb1drvTools
             if File.directory?(match)
               traverse_dir(match, target_obj.mkdir(File.basename(match)))
             else
-              upload(match, target_obj, File.basename(match), overwrite_policy: overwrite_policy)
+              upload(match, target_obj, File.basename(match), overwrite_policy: overwrite_policy, time_sync: time_sync)
             end
           end
         end
@@ -95,17 +98,22 @@ module Rb1drvTools
       end
     end
 
-    def self.upload(source_file, target_directory, target_name, overwrite_policy: :skip)
+    def self.upload(source_file, target_directory, target_name, overwrite_policy: :skip, time_sync: false)
       return if source_file.include?('.1drv_upload')
       printf "%s => %s :: %s\n", source_file, target_directory.absolute_path, target_name
       target_obj = target_directory.get_child(target_name)
       return puts 'Target is a directory, skipped' if target_obj.dir?
+      mtime = File.mtime(source_file)
+      file_size = File.size(source_file)
       if overwrite_policy != :overwrite && target_obj.file?
+        if time_sync && target_obj.size == file_size && target_obj.mtime - mtime > 2
+          target_obj.set_mtime(mtime)
+          print '<sync mtime> '
+        end
         return puts 'Skipped' if overwrite_policy == :skip
         return puts 'Remote file is up to date, skipped' if target_obj.mtime >= File.mtime(source_file) - 2
       end
       screen_width = TTY::Screen.width
-      file_size = File.size(source_file)
       if STDOUT.tty? && screen_width >= 50
         multibar = TTY::ProgressBar::Multi.new
         bar = multibar.register("%s :current_byte / :total_byte :byte_rate/s [:bar] :eta :percent" % source_file[0..29], total: file_size, frequency: 2, head: '>')

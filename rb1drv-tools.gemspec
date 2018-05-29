@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
   spec.required_ruby_version = '>= 2.3'
 
-  spec.add_dependency "rb1drv", "~> 0.1"
+  spec.add_dependency "rb1drv", ">= 0.1.7"
   spec.add_dependency "tty-progressbar", "~> 0"
   spec.add_dependency "tty-prompt", "~> 0"
   spec.add_dependency "tty-screen", "~> 0"

@@ -33,6 +33,7 @@ module Rb1drvTools
           download [-f] <r-files> [@target] Download files into directory recursively, skipping existing files
               -f                                Overwrite existing files regardless
               -s                                Overwrite existing files with different size or older date
+              -t                                Reset last modified time if remote file has newer date and same size
               @directory/                       Upload or download into directory as children, if:
                                                   - target directory exists
                                                   - target ends with a slash

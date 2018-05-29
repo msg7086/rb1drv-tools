@@ -1,8 +1,8 @@
 PATH
   remote: .
   specs:
-    rb1drv-tools (0.1.4)
-      rb1drv (~> 0.1)
+    rb1drv-tools (0.1.5)
+      rb1drv (>= 0.1.7)
       tty-progressbar (~> 0)
       tty-prompt (~> 0)
       tty-screen (~> 0)
@@ -31,7 +31,7 @@ GEM
       tty-color (~> 0.4.0)
     rack (2.0.5)
     rake (10.5.0)
-    rb1drv (0.1.6)
+    rb1drv (0.1.7)
       excon (~> 0.62)
       oauth2 (~> 1.4)
     timers (4.1.2)
