@@ -75,7 +75,7 @@ module Rb1drvTools
           end
           Dir[item].each do |match|
             if File.directory?(match)
-              traverse_dir(match, target_obj.mkdir(File.basename(match)))
+              traverse_dir(match, target_obj.mkdir(File.basename(match)), overwrite_policy: overwrite_policy, time_sync: time_sync)
             else
               upload(match, target_obj, File.basename(match), overwrite_policy: overwrite_policy, time_sync: time_sync)
             end
@@ -84,16 +84,16 @@ module Rb1drvTools
       end
     end
 
-    def self.traverse_dir(source_directory, target_directory)
+    def self.traverse_dir(source_directory, target_directory, overwrite_policy: :skip, time_sync: false)
       Dir.entries(source_directory).sort.each do |child|
         next if child == '.' || child == '..'
         new_path = File.join(source_directory, child)
         if File.directory?(new_path)
           new_dir = target_directory.get_child(child)
           new_dir = target_directory.mkdir(child) unless new_dir.dir?
-          traverse_dir(new_path, new_dir)
+          traverse_dir(new_path, new_dir, overwrite_policy: overwrite_policy, time_sync: time_sync)
         else
-          upload(new_path, target_directory, child)
+          upload(new_path, target_directory, child, overwrite_policy: overwrite_policy, time_sync: time_sync)
         end
       end
     end
