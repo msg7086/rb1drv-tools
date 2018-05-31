@@ -6,12 +6,17 @@ module Rb1drvTools
       elsif target == '/'
         CLI.od.root
       elsif target[0] == '/'
-        target = File.expand_path('/./' + target)
+        target = smart_expand_path(target)
         CLI.root.get(target)
       else
-        target = File.expand_path('/./' + target)
+        target = smart_expand_path(target)
         CLI.cwd.get(target)
       end
+    end
+
+    def self.smart_expand_path(path)
+      path = File.expand_path('/./' + path)
+      path.gsub(%r(^.*/), '/')
     end
   end
 end

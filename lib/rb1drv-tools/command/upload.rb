@@ -70,7 +70,7 @@ module Rb1drvTools
                    else
                      CLI.cwd
                    end
-            target = File.expand_path('/./' + target)
+            target = smart_expand_path(target)
             target_obj = base.mkdir(target)
           end
           Dir[item].each do |match|
